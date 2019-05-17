@@ -8,6 +8,10 @@ chain_id_history: map(uint256, ActivePeriod)
 # Cache of the last time the chain ID was updated
 previous_update_blocknumber: uint256
 
+# Cache of last setpoint of chain ID
+# Note: must be initialized!
+previous_chain_id: uint256
+
 
 @public
 def __init__():
