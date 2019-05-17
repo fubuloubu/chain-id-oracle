@@ -32,4 +32,9 @@ def getChainIdActivePeriod(chain_id: uint256) -> ActivePeriod:
     ActivePeriod(0, 0) is considered to be "invalid" and should be
     handled accordingly by the user of this function.
     """
+    if tx.chain_id == chain_id:
+        return ActivePeriod({
+            start_block: self.previous_update_blocknumber,
+            end_block: block.number-1
+        })
     return self.chain_id_history[chain_id]
