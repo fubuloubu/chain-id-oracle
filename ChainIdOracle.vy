@@ -47,8 +47,7 @@ def updateChainId():
 def getChainIdActivePeriod(_chainId: uint256) -> ActivePeriod:
     """
     Returns the recorded time period for which chain ID is active.
-    ActivePeriod(0, 0) is considered to be "invalid" and should be
-    handled accordingly by the user of this function.
+    ActivePeriod(0, 0) is considered to be "invalid" and reverts.
     """
     if chain.id == _chainId:
         return ActivePeriod({
@@ -58,7 +57,10 @@ def getChainIdActivePeriod(_chainId: uint256) -> ActivePeriod:
             #       in any order on the block it's included, we use the
             #       previous block to ensure consistency in results.
         })
-    return self.chain_id_history[_chainId]
+    period: ActivePeriod = self.chain_id_history[_chainId]
+    assert period.start_block != 0 or period.end_block != 0
+    return period
+
 
 
 @public
