@@ -24,7 +24,8 @@ def updateChainId():
     Anyone can call this function at any point in time after Chain ID
     is updated for the network. The time may not exactly align with the
     block number it was updated at, but should be within an hour of the
-    real block number (and probably much less, perhaps 1-2 blocks)
+    real block number (and probably much less, perhaps 1-2 blocks).
+    The caller gets a payout in order to incentivize this happening quickly.
     """
     assert chain.id != self.previous_chain_id
     self.chain_id_history[chain.id] = ActivePeriod({
@@ -33,6 +34,8 @@ def updateChainId():
     })
     self.previous_update_blocknumber = block.number
     self.previous_chain_id = chain.id
+    send(msg.sender, self.balance)  # Using honeypots for good!
+
 
 @public
 @constant
@@ -48,3 +51,13 @@ def getChainIdActivePeriod(_chainId: uint256) -> ActivePeriod:
             end_block: block.number-1
         })
     return self.chain_id_history[_chainId]
+
+@public
+@payable
+def __default__():
+    """
+    If you rely on this contract as a critical piece of infrastructure,
+    consider donating some gwei towards incentivizing it being updated,
+    in the eventuality that a contentious fork comes to pass!
+    """
+    pass
